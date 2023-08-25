@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 
-	"estiam_golang_api_course_finalproject-master/internal/handlers"
-	"estiam_golang_api_course_finalproject-master/internal/repos"
-	"estiam_golang_api_course_finalproject-master/internal/services"
-
-	"github.com/Wenth93/Project-Go-Lang/internal/config"
+	"github.com/Wenth93/Project-Go-Lang/config"
+	"github.com/Wenth93/Project-Go-Lang/handlers"
+	"github.com/Wenth93/Project-Go-Lang/repos"
+	"github.com/Wenth93/Project-Go-Lang/services"
 
 	"github.com/labstack/echo/v4"
 )
