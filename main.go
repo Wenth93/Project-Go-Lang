@@ -7,7 +7,7 @@ import (
 	"estiam_golang_api_course_finalproject-master/internal/repos"
 	"estiam_golang_api_course_finalproject-master/internal/services"
 
-	"github.com/phramos07/estiam_golang_api_course_finalproject-master/internal/config"
+	"github.com/Wenth93/Project-Go-Lang/internal/config"
 
 	"github.com/labstack/echo/v4"
 )
