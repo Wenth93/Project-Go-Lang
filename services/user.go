@@ -4,8 +4,8 @@ import (
 	"context"
 	"os"
 
-	"../repos"
-	"../types"
+	"github.com/Wenth93/Project-Go-Lang/repos"
+	"github.com/Wenth93/Project-Go-Lang/types"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -13,7 +13,6 @@ import (
 
 type UserService interface {
 	CreateNewUser(context.Context, *types.User) error
-	GetUser(context.Context, string) (*types.User, error)
 	Authenticate(context.Context, string, string) (string, error) // New method for authentication
 }
 
@@ -34,17 +33,14 @@ Tips
 - Inject app configuration (bcrypt secret) into here (user service)
 */
 func (u *userServiceImpl) CreateNewUser(c context.Context, user *types.User) error {
-	// Generate a new UUID for the user's ID
 	user.Id = uuid.New().String()
 
-	// Hash the password using bcrypt
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 	user.Password = string(hashedPassword)
 
-	// Store the user in the repository
 	return u.repo.CreateUser(c, user)
 }
 

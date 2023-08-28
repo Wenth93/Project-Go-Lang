@@ -3,9 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"../types"
-
-	"../services"
+	"github.com/Wenth93/Project-Go-Lang/services"
+	"github.com/Wenth93/Project-Go-Lang/types"
 	"github.com/labstack/echo/v4"
 )
 
@@ -34,7 +33,6 @@ func (h *UserHandler) Post(ctx echo.Context) error {
 		Password: newUser.Password,
 	}
 
-	// Call the service to create the new user
 	err := h.userService.CreateNewUser(ctx.Request().Context(), user)
 	if err != nil {
 		return err

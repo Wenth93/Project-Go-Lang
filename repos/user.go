@@ -4,13 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"../types"
+	"github.com/Wenth93/Project-Go-Lang/types"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserRepository interface {
 	GetUser(context.Context, string) (*types.User, error)
 	CreateUser(context.Context, *types.User) error
+	GetUserByUsername(context.Context, string) (*types.User, error)
 }
 
 type userRepositoryImpl struct {
@@ -23,7 +25,6 @@ func NewUserRepository(conn *pgxpool.Pool) UserRepository {
 	}
 }
 
-/*REMOVE THIS METHOD*/
 const SQL_GET_USER = `
 		select 
 			u.id,
@@ -57,9 +58,40 @@ func (repo *userRepositoryImpl) GetUser(c context.Context, userId string) (*type
 	return nil, nil
 }
 
-/*IMPLEMENT THIS METHOD*/
-const SQL_INSERT_USER = `?`
+const SQL_GET_USER_BY_USERNAME = `
+	SELECT
+		u.id,
+		u.username,
+		u.pass
+	FROM
+		"user" AS u
+	WHERE u.username = $1;
+`
+
+func (repo *userRepositoryImpl) GetUserByUsername(c context.Context, username string) (*types.User, error) {
+	row := repo.dbConn.QueryRow(c, SQL_GET_USER_BY_USERNAME, username)
+
+	user := &types.User{}
+	err := row.Scan(&user.Id, &user.Username, &user.Password)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil // User not found
+		}
+		return nil, err
+	}
+
+	return user, nil
+}
+
+const SQL_INSERT_USER = `
+	INSERT INTO "user" (id, username, pass) VALUES ($1, $2, $3)
+	RETURNING id;`
 
 func (repo *userRepositoryImpl) CreateUser(c context.Context, user *types.User) error {
+	var userId string
+	err := repo.dbConn.QueryRow(c, SQL_INSERT_USER, user.Id, user.Username, user.Password).Scan(&userId)
+	if err != nil {
+		return fmt.Errorf("error during user creation: %v", err)
+	}
 	return nil
 }
