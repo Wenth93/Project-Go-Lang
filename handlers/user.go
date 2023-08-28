@@ -25,7 +25,7 @@ func (h *UserHandler) Post(ctx echo.Context) error {
 	}
 
 	if err := ctx.Bind(&newUser); err != nil {
-		return err
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request data"})
 	}
 
 	user := &types.User{
@@ -35,7 +35,7 @@ func (h *UserHandler) Post(ctx echo.Context) error {
 
 	err := h.userService.CreateNewUser(ctx.Request().Context(), user)
 	if err != nil {
-		return err
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create user"})
 	}
 
 	return ctx.JSON(http.StatusCreated, user)
