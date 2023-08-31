@@ -1,6 +1,6 @@
 # Project-Go-Lang
 Final project required for students as the final assessment of the Golang API Course at Estiam in 2023.
 
-## Project-Go-Lang
+## Members
 
-This project is done by Tharsshan PATHMANATHAN
+This project was done by Tharsshan PATHMANATHAN
