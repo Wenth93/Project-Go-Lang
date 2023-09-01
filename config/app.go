@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 
+	"log"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/kelseyhightower/envconfig"
 
@@ -21,6 +23,9 @@ func Load() *AppConfig {
 
 	dbConfig := DbConfig{}
 	envconfig.MustProcess("DB", &dbConfig)
+	if err := envconfig.Process("DB", &dbConfig); err != nil {
+		log.Fatal("error processing DB configuration:", err)
+	}
 
 	conn := connectToDb(&dbConfig)
 
