@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/Wenth93/Project-Go-Lang/tests"
+	"project/tests"
+
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )

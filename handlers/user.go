@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"net/http"
+	"project/services"
+	"project/types"
+	"strings"
 
-	"github.com/Wenth93/Project-Go-Lang/services"
-	"github.com/Wenth93/Project-Go-Lang/types"
 	"github.com/labstack/echo/v4"
 )
 
@@ -18,6 +19,7 @@ func NewUserHandler(service services.UserService) *UserHandler {
 	}
 }
 
+// Route for Creation New User
 func (h *UserHandler) Post(ctx echo.Context) error {
 	var newUser struct {
 		Username string `json:"username"`
@@ -41,6 +43,7 @@ func (h *UserHandler) Post(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, user)
 }
 
+// Route for User Login
 func (h *UserHandler) Login(ctx echo.Context) error {
 	var loginUser struct {
 		Username string `json:"username"`
@@ -53,7 +56,17 @@ func (h *UserHandler) Login(ctx echo.Context) error {
 
 	token, err := h.userService.Authenticate(ctx.Request().Context(), loginUser.Username, loginUser.Password)
 	if err != nil {
-		return err
+		// Handling login errors
+		switch {
+		case strings.Contains(err.Error(), "errorUserNotFound"):
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Wrong username"})
+		case strings.Contains(err.Error(), "errorPassword"):
+			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Wrong password"})
+		case strings.Contains(err.Error(), "errorToken"):
+			return ctx.JSON(http.StatusUnauthorized, map[string]string{"error": "Error when creating a session"})
+		default:
+			return err
+		}
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]string{"token": token})
